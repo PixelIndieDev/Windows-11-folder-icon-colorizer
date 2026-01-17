@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SVG Theme Editor</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+  <body>
+    <div id="background"></div>
+    
+    <div id="content">
+        <h1>Windows 11 folder icon colorizer</h1>
+
+        <div class="main">
+          <div class="controls" id="glass">
+            <label>
+              Theme color
+              <input type="color" id="colorInput" value="#ffe7a2">
+            </label>
+            <div id="presetColors">
+              <button class="colorselect" data-color="#ffe7a2" style="background:#ffe7a2;"> </button>
+              <button class="colorselect" data-color="#e43c29" style="background:#e43c29;"> </button>
+              <button class="colorselect" data-color="#ed6f0f" style="background:#ed6f0f;"> </button>
+              <button class="colorselect" data-color="#3e9e4a" style="background:#3e9e4a;"> </button>
+              <button class="colorselect" data-color="#27938e" style="background:#27938e;"></button>
+              <button class="colorselect" data-color="#1f84d0" style="background:#1f84d0;"></button>
+              <button class="colorselect" data-color="#9960c6" style="background:#9960c6;"></button>
+              <button class="colorselect" data-color="#ce55b9" style="background:#ce55b9;"></button>
+              <button class="colorselect" data-color="#b0b7ba" style="background:#b0b7ba;"></button>
+              <button class="colorselect" data-color="#ffbcb2" style="background:#ffbcb2;"></button>
+              <button class="colorselect" data-color="#ffbf84" style="background:#ffbf84;"></button>
+              <button class="colorselect" data-color="#8ed290" style="background:#8ed290;"></button>
+              <button class="colorselect" data-color="#7ad1cd" style="background:#7ad1cd;"></button>
+              <button class="colorselect" data-color="#86c8f7" style="background:#86c8f7;"></button>
+              <button class="colorselect" data-color="#d4aff6" style="background:#d4aff6;"></button>
+              <button class="colorselect" data-color="#f7aae7" style="background:#f7aae7;"></button>
+            </div>
+
+            <button id="downloadButton" class="button">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                <span>Download SVG</span>
+              </div>
+            </button>
+
+            <label class="sizelabel">
+              PNG size
+              <input
+                type="range"
+                id="sizeSlider"
+                min="5"
+                max="12"
+                step="1"
+                value="8"
+              />
+              <span id="sizeLabelText">256x256</span>
+            </label>
+            <button id="downloadButtonPNG" class="button">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                <span>Download PNG</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="previewBox" id="glass"></div>
+        </div>
+      </div>
+
+    <script src="assets/javascript/script.js"></script>
+
+  </body>
+</html>
