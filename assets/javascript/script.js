@@ -147,7 +147,7 @@ downloadButton.addEventListener("click", () => {
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "edited.svg";
+  a.download = `Win11Folder_color_${colorInput.value}.svg`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -183,7 +183,7 @@ downloadButtonPNG.addEventListener("click", () => {
     canvas.toBlob(blob => {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `edited-${size}px.png`;
+      a.download = `Win11Folder_color_${colorInput.value}_${size}px.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
