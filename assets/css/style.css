@@ -268,4 +268,16 @@ body {
   #presetColors {
     width: 45vw;
   }
+
+  h2 {
+    font-size: 3vw;
+  }
+
+  h3 {
+    font-size: 3vw;
+  }
+
+  h4 {
+    font-size: 2vw;
+  }
 }
