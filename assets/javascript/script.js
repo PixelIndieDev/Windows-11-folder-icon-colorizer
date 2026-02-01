@@ -4,7 +4,9 @@ const downloadButton = document.getElementById("downloadButton");
 const sizeSlider = document.getElementById("sizeSlider");
 const sizeLabel = document.getElementById("sizeLabelText");
 const downloadButtonPNG = document.getElementById("downloadButtonPNG");
+const downloadButtonICO = document.getElementById("downloadButtonICO");
 const background = document.getElementById("background");
+const loadingOverlay = document.getElementById("loadingOverlay");
 const presetButtons = document.querySelectorAll("#presetColors button");
 
 let svgElement = null;
@@ -139,6 +141,9 @@ function sliderToSize() {
 downloadButton.addEventListener("click", () => {
   if (!svgElement) return;
 
+  loadingOverlay.style.opacity = '1';
+  loadingOverlay.style.pointerEvents = 'auto';
+
   const serializer = new XMLSerializer();
   const svgString = serializer.serializeToString(svgElement);
 
@@ -153,11 +158,16 @@ downloadButton.addEventListener("click", () => {
   document.body.removeChild(a);
 
   URL.revokeObjectURL(url);
+
+  setTimeout(() => {loadingOverlay.style.opacity = '0';loadingOverlay.style.pointerEvents = 'none';}, 600);
 });
 
 //download png
 downloadButtonPNG.addEventListener("click", () => {
   if (!svgElement) return;
+
+  loadingOverlay.style.opacity = '1';
+  loadingOverlay.style.pointerEvents = 'auto';
 
   const size = sliderToSize();
 
@@ -191,4 +201,117 @@ downloadButtonPNG.addEventListener("click", () => {
   };
 
   img.src = url;
+
+  const timeout = 300 + Math.floor(size / 256) * 50;
+  setTimeout(() => {loadingOverlay.style.opacity = '0';loadingOverlay.style.pointerEvents = 'none';}, timeout);
+});
+
+//download ico
+downloadButtonICO.addEventListener("click", () => {
+  if (!svgElement) return;
+
+  loadingOverlay.style.opacity = '1';
+  loadingOverlay.style.pointerEvents = 'auto';
+
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svgElement);
+  const svgBlob = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+  const url = URL.createObjectURL(svgBlob);
+
+  const sizes = [16, 32, 48, 64, 128, 256];
+  const canvases = [];
+
+  let loadedCount = 0;
+
+  sizes.forEach(size => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0, size, size);
+
+      canvases.push({size, canvas});
+      loadedCount++;
+
+      if (loadedCount === sizes.length) {
+        URL.revokeObjectURL(url);
+        generateICO(canvases);
+      }
+    };
+    
+    img.src = url;
+  });
+
+  function generateICO(canvases) {
+    canvases.sort((a, b) => a.size - b.size);
+
+    const header = new ArrayBuffer(6);
+    const headerView = new DataView(header);
+    headerView.setUint16(0, 0, true);
+    headerView.setUint16(2, 1, true);
+    headerView.setUint16(4, canvases.length, true);
+
+    const directorySize = canvases.length * 16;
+    let offset = 6 + directorySize;
+
+    const directories = [];
+    const imageDataList = [];
+
+    canvases.forEach(({size, canvas}) => {
+      const imageData = canvas.toDataURL("image/png").split(",")[1];
+      const imageBytes = Uint8Array.from(atob(imageData), c => c.charCodeAt(0));
+
+      const directory = new ArrayBuffer(16);
+      const dirView = new DataView(directory);
+      
+      dirView.setUint8(0, size >= 256 ? 0 : size);
+      dirView.setUint8(1, size >= 256 ? 0 : size);
+      dirView.setUint8(2, 0);
+      dirView.setUint8(3, 0);
+      dirView.setUint16(4, 1, true);
+      dirView.setUint16(6, 32, true);
+      dirView.setUint32(8, imageBytes.length, true);
+      dirView.setUint32(12, offset, true);
+
+      directories.push(new Uint8Array(directory));
+      imageDataList.push(imageBytes);
+      offset += imageBytes.length;
+    });
+
+    const totalSize = 6 + directorySize + imageDataList.reduce((sum, img) => sum + img.length, 0);
+    const icoFile = new Uint8Array(totalSize);
+
+    let position = 0;
+
+    icoFile.set(new Uint8Array(header), position);
+    position += 6;
+
+    directories.forEach(dir => {
+      icoFile.set(dir, position);
+      position += 16;
+    });
+
+    imageDataList.forEach(imgData => {
+      icoFile.set(imgData, position);
+      position += imgData.length;
+    });
+
+    const blob = new Blob([icoFile], {type: "image/x-icon"});
+    const downloadUrl = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = `Win11Folder_color_${colorInput.value}.ico`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(downloadUrl);
+
+    setTimeout(() => {loadingOverlay.style.opacity = '0';loadingOverlay.style.pointerEvents = 'none';}, 800);
+  }
 });

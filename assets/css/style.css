@@ -19,6 +19,19 @@ body {
   background-color: #0066ff;
 }
 
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 10;
+  background: #0006;
+  backdrop-filter: blur(2vw);
+  -webkit-backdrop-filter: blur(2vw);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
 #background svg {
   z-index: -1;
   width: 100vw;
@@ -205,6 +218,63 @@ body {
   transform: skewX(-20deg);
 }
 
+.wrapperLoadingIcon {
+  width: 20vw;
+  height: 12vh;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  top: 44vh;
+  left: 40vw;
+}
+
+.Loadingcircle {
+  width: 2vh;
+  height: 2vh;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #fff;
+  left: 15%;
+  transform-origin: 50%;
+  animation: loadingcircleAnim .5s alternate infinite ease;
+}
+
+.Loadingcircle:nth-child(2) {
+  left: 45%;
+  animation-delay: .2s;
+}
+
+.Loadingcircle:nth-child(3) {
+  left: auto;
+  right: 15%;
+  animation-delay: .3s;
+}
+
+.LoadingCircleshadow {
+  width: 2vh;
+  height: 0.4vh;
+  border-radius: 50%;
+  background-color: #000000e6;
+  position: absolute;
+  top: 62px;
+  transform-origin: 50%;
+  z-index: -1;
+  left: 15%;
+  filter: blur(1px);
+  animation: loadingcircleShadowAnim .5s alternate infinite ease;
+}
+
+.LoadingCircleshadow:nth-child(4) {
+  left: 45%;
+  animation-delay: .2s
+}
+
+.LoadingCircleshadow:nth-child(5) {
+  left: auto;
+  right: 15%;
+  animation-delay: .3s;
+}
+
 @keyframes sh02 {
   from {
     opacity: 0;
@@ -216,6 +286,37 @@ body {
   to {
     opacity: 0;
     left: 100%;
+  }
+}
+
+@keyframes loadingcircleAnim {
+  0% {
+    top: 60px;
+    height: 5px;
+    border-radius: 50px 50px 25px 25px;
+    transform: scaleX(1.7);
+  }
+  40% {
+    height: 20px;
+    border-radius: 50%;
+    transform: scaleX(1);
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+@keyframes loadingcircleShadowAnim {
+  0% {
+    transform: scaleX(1.5);
+  }
+  40% {
+    transform: scaleX(1);
+    opacity: .7;
+  }
+  100% {
+    transform: scaleX(.2);
+    opacity: .4;
   }
 }
 
